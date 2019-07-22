@@ -1,0 +1,31 @@
+mysql> select * from Product;
++------------+--------------+---------------+-------------------+------+
+| product_id | product_name | product_stock | product_unitPrice | c_id |
++------------+--------------+---------------+-------------------+------+
+| 1          | Note Books   |            18 |             50.00 | 1    |
+| 2          | Pen          |            16 |             10.00 | 2    |
+| 3          | Scale        |            15 |             15.00 | 4    |
+| 4          | File         |            10 |             50.00 | 3    |
++------------+--------------+---------------+-------------------+------+
+4 rows in set (0.00 sec)
+
+mysql> select * from Category;
++------+---------+
+| c_id | c_name  |
++------+---------+
+| 1    | Books   |
+| 2    | Pens    |
+| 3    | Manuals |
+| 4    | Scale   |
++------+---------+
+4 rows in set (0.00 sec)
+
+mysql> select distinct * from Product as p where p.c_id not in (select c.c_id from Category as c where c.c_name = 'Books' or c.c_name = 'Pens');
++------------+--------------+---------------+-------------------+------+
+| product_id | product_name | product_stock | product_unitPrice | c_id |
++------------+--------------+---------------+-------------------+------+
+| 3          | Scale        |            15 |             15.00 | 4    |
+| 4          | File         |            10 |             50.00 | 3    |
++------------+--------------+---------------+-------------------+------+
+2 rows in set (0.00 sec)
+

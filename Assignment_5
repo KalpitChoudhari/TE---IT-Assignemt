@@ -1,0 +1,153 @@
+A]. Aggregate functions (count, sum, avg)
+	
+	Get the total no of customers.
+	mysql> select count(*) from Customer;
+	+----------+
+	| count(*) |
+	+----------+
+	|        4 |
+	+----------+
+	1 row in set (0.01 sec)
+	
+	Display average purchase amount of all the customers.
+	mysql> select avg(total_cost) from Order_Record;
+	+-----------------+
+	| avg(total_cost) |
+	+-----------------+
+	|       53.750000 |
+	+-----------------+
+	1 row in set (0.00 sec)
+
+	Display total purchase amount of all the customers.
+	mysql> select sum(total_cost) from Order_Record;
+	+-----------------+
+	| sum(total_cost) |
+	+-----------------+
+	|          215.00 |
+	+-----------------+
+	1 row in set (0.00 sec)
+	
+B]. Built in functions (now (), date (), day (), time () etc)
+	
+	Find DAYNAME :-
+	mysql> select DAYNAME('2019-07-10');
+	+-----------------------+
+	| DAYNAME('2019-07-10') |
+	+-----------------------+
+	| Wednesday             |
+	+-----------------------+
+	1 row in set (0.00 sec)
+
+	Find MONTHNAME :-
+	mysql> select MONTHNAME('2019-07-10');
+	+-------------------------+
+	| MONTHNAME('2019-07-10') |
+	+-------------------------+
+	| July                    |
+	+-------------------------+
+	1 row in set (0.00 sec)
+	
+	Find YEAR :-
+	mysql> SELECT YEAR('2009-05-19');
+	+--------------------+
+	| YEAR('2009-05-19') |
+	+--------------------+
+	|               2009 |
+	+--------------------+
+	1 row in set (0.00 sec)
+
+	
+	Find DAYNAME, MONTHNAME and YEAR of the purchase order made on "".
+		
+		
+		
+		
+		
+		
+		
+	mysql> select distinct total_cost from Order_Record where total_cost not in(select distinct t.total_cost from Order_Record as t, Order_Record as s where t.total_cost<s.total_cost and t.customer_id != s.customer_id);
++------------+
+| total_cost |
++------------+
+|     500.00 |
++------------+
+1 row in set (0.00 sec)
+
+
+
+
+
+
+
+
+
+
+
+
+
+mysql> select customer_name from Customer where customer_id in(select distinct customer_id,total_cost from Order_Record where total_cost not in(select distinct t.total_cost from Order_Record as t, Order_Record as s where t.total_cost<s.total_cost));
+ERROR 1241 (21000): Operand should contain 1 column(s)
+mysql> (select distinct customer_id,total_cost from Order_Record where total_cost not in(select distinct t.total_cost from Order_Record as t, Order_Record as s where t.total_cost<s.total_cost));
++-------------+------------+
+| customer_id | total_cost |
++-------------+------------+
+| 4           |     500.00 |
++-------------+------------+
+1 row in set (0.00 sec)
+
+mysql> (select distinct c1.customer_name,customer_id,total_cost from Customer as c1,Order_Record where total_cost not in(select distinct t.total_cost from Order_Record as t, Order_Record as s where t.total_cost<s.total_cost));
+ERROR 1052 (23000): Column 'customer_id' in field list is ambiguous
+mysql> (select distinct c1.customer_name,o1.customer_id,total_cost from Customer as c1,Order_Record as o1 where o1.total_cost not in(select distinct t.total_cost from Order_Record as t, Order_Record as s where t.total_cost<s.total_cost));
++---------------+-------------+------------+
+| customer_name | customer_id | total_cost |
++---------------+-------------+------------+
+| ABC           | 4           |     500.00 |
+| DEF           | 4           |     500.00 |
+| PQR           | 4           |     500.00 |
+| XYZ           | 4           |     500.00 |
++---------------+-------------+------------+
+4 rows in set (0.00 sec)
+
+mysql> (select distinct o1.customer_id,total_cost from Order_Record as o1 where o1.total_cost not in(select distinct t.total_cost from Order_Record as t, Order_Record as s where t.total_cost<s.total_cost));
++-------------+------------+
+| customer_id | total_cost |
++-------------+------------+
+| 4           |     500.00 |
++-------------+------------+
+1 row in set (0.00 sec)
+
+mysql> 
+
+
+
+
+
+
+
+mysql> (select distinct c2.customer_name,o1.customer_id,total_cost from Customer as c2,Order_Record as o1 where o1.total_cost not in(select distinct t.total_cost from Order_Record as t, Order_Record as s where t.total_cost<s.total_cost) and c2.customer_id = o1.customer_id);
++---------------+-------------+------------+
+| customer_name | customer_id | total_cost |
++---------------+-------------+------------+
+| XYZ           | 4           |     500.00 |
++---------------+-------------+------------+
+1 row in set (0.00 sec)
+
+
+
+
+mysql> update Order_Record set total_cost = (total_cost - (0.05 * total_cost)) where total_cost>=75;
+Query OK, 3 rows affected (0.04 sec)
+Rows matched: 3  Changed: 3  Warnings: 0
+
+mysql> select * from Order_Record;
++----------+-------------+------------+------------+----------+------------+
+| order_id | customer_id | product_id | DT         | Quantity | total_cost |
++----------+-------------+------------+------------+----------+------------+
+|        1 | 1           | 1          | 2019-07-08 |        2 |      95.00 |
+|        1 | 1           | 2          | 2019-07-08 |        2 |      20.00 |
+|        3 | 2           | 3          | 2019-07-10 |        5 |      71.25 |
+|        4 | 3           | 2          | 2019-07-15 |        2 |      20.00 |
+|        5 | 4           | 4          | 2019-07-17 |       10 |     475.00 |
++----------+-------------+------------+------------+----------+------------+
+5 rows in set (0.00 sec)
+
