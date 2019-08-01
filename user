@@ -1,8 +1,0 @@
-USer:-
-user1 - pict123
-
-
-Backup Database :-
- sudo mysqldump Order_mgt  > DB.sql -p
- sudo mysql Order_mgt < DB.sql -p
-
